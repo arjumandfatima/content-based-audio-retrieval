@@ -1,0 +1,112 @@
+	<!DOCTYPE html>
+	<html lang="zxx" class="no-js">
+	<head>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+   <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+   <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+   <!-- <script src="https://raw.github.com/botmonster/jquery-bootpag/master/lib/jquery.bootpag.min.js"></script> -->
+   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+
+   <style>
+    body {
+      padding-top: 80px;
+      text-align: center;
+      font-family: monaco, monospace;
+      background: url(http://media.giphy.com/media/Jrd9E2kuPuOYM/giphy.gif) 50%;
+      background-size: cover;
+    }
+    h1, h2 {
+      display: inline-block;
+      background: #fff;
+    }
+    figcaption{
+      color: #fff;
+      font-size: 15px
+    }
+    h1 {
+      font-size: 30px
+    }
+    h2 {
+      font-size: 20px;
+    }
+    span {
+      background: #fd0;
+    }
+    .fa-th,  .fa-signal{
+      color: white;
+    }
+
+    body {
+      margin: 40px;
+    }
+
+    .box {
+      background-color: #261e1ecc;
+      color: #fff;
+      border-radius: 5px;
+      padding: 20px;
+      font-size: 150%;
+    }
+
+    .box:nth-child(even) {
+      background-color: #897a3c47;  
+      color: #000;
+    }
+    .wrapper2 {
+      display: grid;
+      # border:1px solid #000;
+      grid-template-columns: repeat(auto-fill, minmax(400px,1fr));
+
+      grid-gap: 10px;
+      #grid-auto-columns: repeat(auto-fit, minmax(200px,1fr));
+    }
+    .container {
+      margin-top: 20px;
+    }
+    .page {
+      display: none;
+    }
+    .page-active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Welcome to<span> CBAR Engine</span></h1><br>
+  <h2>an audio-based content retrieval system</h2><br>
+  <figure  id="figure-query"></figure>
+  <div class="wrapper2" id="result-boxes"></div>
+  <script>
+    $( document ).ready(function() {
+      var sorted_matches = '{{ sorted_matches |tojson | safe }}' ;
+      results = JSON.parse(sorted_matches)
+
+      query = results[results.length-1];
+      console.log('query');
+      console.log(query);
+      figureQuery=  ' <figcaption>You searched for:</figcaption>'+
+      '<audio controls src="'+query['path']+'">'+
+      'Your browser does not support the<code>audio</code> element.'+
+      '</audio>'+
+      "&nbsp&nbsp" + '<a href="'+query['mfcc']+'"><i class="fa fa-th" aria-hidden="true"></i></a>'+"&nbsp&nbsp"+
+      '<a href="'+query['waveform']+'"><i class="fa fa-signal" aria-hidden="true"></i></a>';
+      $('#figure-query').append(figureQuery);
+      var i;
+      for (i=0; i<results.length-2; i++){
+       result = results[i]
+       box = '<div class="box box'+i+'"><figure>'+
+       '<figcaption>'+result['name']+'</figcaption>'+
+       '<audio controls src="'+result['path']+'">'+
+       'Your browser does not support the<code>audio</code> element.'+
+       '</audio>'+
+       "&nbsp&nbsp" +'<a href="'+result['mfcc']+'"><i class="fa fa-th" aria-hidden="true"></i></a>'+"&nbsp&nbsp"+
+       '<a href="'+result['waveform']+'"><i class="fa fa-signal" aria-hidden="true"></i></a>'+
+       '</figure>'+result['distance']+'</div>';
+       $('#result-boxes').append(box);
+     }
+   });
+  </script>
+</body>
